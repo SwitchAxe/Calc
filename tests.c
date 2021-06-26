@@ -1,0 +1,163 @@
+#include <stddef.h>
+#include "lib/test.h"
+#include "lib/test_calc.h"
+#include "lib/queue.h"
+#include "lib/calc.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+int main(void)
+{
+
+#if 0 // turn off/on all removeNewline() tests
+
+	{
+		char str[6] = {'c','i','a','o','\n','\0'};
+		test_removeNewline(str, "ciao", __LINE__, "normal situation");
+	}
+
+	{
+		char str[6] = {'c','i','a','o','\0'};
+		test_removeNewline(str, "ciao", __LINE__, "no final \\n");
+	}
+
+	{
+	char str[6] = {'\0'};
+	test_removeNewline(str, "", __LINE__, "empty string");
+	}
+
+	{
+	char str[9] = {'f','o','o','\n','b','a','r','\n','\0'};
+	test_removeNewline(str, "foo", __LINE__, "multiple newlines");
+	}
+
+	test_removeNewline(NULL, NULL, __LINE__, "NULL pointer");
+
+#endif // turn off/on all removeNewline() tests
+
+#if 1 //turn off/on all removeWhitespaces() tests
+
+
+
+	{
+		char str[6] = {'c', 'i', 'a', 'o', '\0'};
+		test_removeWhitespaces(str, "ciao", __LINE__, "no whitespaces");
+	}
+
+	{
+	char str[6] = {'c', 'i', ' ', 'a', 'o', '\0'};
+	test_removeWhitespaces(str, "ciao", __LINE__, "normal situation");
+	}
+
+	{
+		char str[7] = {'c', 'i', ' ', ' ', 'a', 'o', '\0'};
+		test_removeWhitespaces(str, "ciao", __LINE__, "multiple spaces in string");
+	}
+
+	{
+		char str[7] = { ' ', ' ', 'c', 'i', 'a', 'o', '\0'};
+		test_removeWhitespaces(str, "ciao", __LINE__, "multiple spaces before string");
+	}
+
+	{
+		char str[7] = {'c', 'i', 'a', 'o', ' ', ' ', '\0'};
+		test_removeWhitespaces(str, "ciao", __LINE__, "multiple spaces after string");
+	}
+
+
+	{
+		char str9[1] = {'\0'};
+		test_removeWhitespaces(str9, "", __LINE__, "null terminator");
+	}
+
+	test_removeWhitespaces(NULL, NULL, __LINE__, "NULL pointer");
+#endif
+
+#if 0 //turn on/off all tokenize() tests
+
+	{
+		char str[100];
+		strcpy(str, "2+3");
+		char* v1 = "2";
+		char* v2 = "+";
+		char* v3 = "3";
+		char* exp1[]= {v1, v2, v3, NULL};
+		test_tokenize(str, exp1, __LINE__, "normal situation");
+	}
+
+	{
+		char str[100];
+		strcpy(str, "21+36");
+		char* v1 = "21";
+		char* v2 = "+";
+		char* v3 = "36";
+		char* exp1[]= {v1, v2, v3, NULL};
+		test_tokenize(str, exp1, __LINE__, "multiple digits");
+	}
+
+	{
+		char str[100];
+		strcpy(str, "21 + 36");
+		char* v1 = "21";
+		char* v2 = "+";
+		char* v3 = "36";
+		char* exp1[] = {v1, v2, v3, NULL};
+		test_tokenize(str, exp1, __LINE__, "multiple digits and spaces");
+	}
+
+	{
+		char str[100];
+		strcpy(str, "32+(5+2)");
+		char* exp1[] = {"32", "+", "(", "5", "+", "2", ")", NULL};
+		test_tokenize(str, exp1, __LINE__, "parentheses");
+	}
+
+	{
+		char str[100];
+		strcpy(str, "(32+(5+2))");
+		char* exp1[] = {"(", "32", "+", "(", "5", "+", "2", ")", ")", NULL};
+		test_tokenize(str, exp1, __LINE__, "parentheses at start and end");
+	}
+
+	{
+		char str[100];
+		strcpy(str, "3.4 + 5.2");
+		char* exp[] = {"3.4", "+", "5.2", NULL};
+		test_tokenize(str, exp, __LINE__, "floating point values");
+	}
+
+#endif
+
+
+
+#if 1 //turn on/off all the calc tests
+	{
+		queue* q = createQueue(4);
+		queuePush(q, "24");
+		queuePush(q, "32");
+		queuePush(q, "+");
+		queuePush(q, "45");
+		queuePush(q, "12");
+		queuePush(q, "+");
+		queuePush(q, "*");
+		test_calc(q, 3192.0, __LINE__, "normal situation");
+	}
+
+#endif
+
+#if 1 //turn on/off all resort tests
+
+	{
+
+		queue* q = createQueue(4);
+		queuePush(q, "25");
+		queuePush(q, "34");
+		queuePush(q, "+");
+		char* tokens[] = {"25", "+", "34", NULL};
+		test_resort(tokens, q, __LINE__, "normal situation");
+	}
+
+#endif
+
+	return 0;
+}

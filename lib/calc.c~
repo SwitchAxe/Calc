@@ -16,8 +16,8 @@ for (int i = 0; i < MAX_LINE_LEN; i++)\
 free(m); \
 return NULL
 /*
-	the above macro equals to 
-	for (...) 
+	the above macro equals to
+	for (...)
 		free(m[i]);
 	free(m)
 
@@ -29,7 +29,7 @@ char* removeNewline(char* string)
 	char* rmstr = malloc((strlen(string)+1)*sizeof(char));
 	if(string == NULL)
 	{
-		return NULL; 
+		return NULL;
 	}
 
 	for (size_t i = 0; i < strlen(string); i++)
@@ -51,7 +51,7 @@ char* removeNewline(char* string)
 char* removeWhitespaces(char* string)
 {
 	char* str = (char*) malloc((strlen(string)+1)*sizeof(char));
-	
+
 	if (string == NULL)
 	{
 		return NULL;
@@ -60,13 +60,13 @@ char* removeWhitespaces(char* string)
 	int write = 0; //writing index
 	for (int read = 0; string[read] != '\0'; read++)
 	{
-		if (string[read] == ' ') 
-		{ 
-			continue; 
+		if (string[read] == ' ')
+		{
+			continue;
 		}
 		str[write] = string[read];
 		write++;
-	} 
+	}
 	str[write] = '\0';
 	return str;
 }
@@ -123,17 +123,17 @@ char* removeWhitespaces(char* string)
 	      //            if fpoint flag false then extend number, set fpoint flag true
 	      //      if last sign     then ERROR
 	      //      if last fpoint   then ERROR
-	      //      >>> 
+	      //      >>>
 
-enum types 
+enum types
 {
-	t_fpoint, 
+	t_fpoint,
 	t_digit,
 	t_opening,
 	t_closing,
-	t_operator, 
-	t_sign,		
-	t_nothing 
+	t_operator,
+	t_sign,
+	t_nothing
 };
 
 char** tokenize(char* Exp)
@@ -152,12 +152,12 @@ char** tokenize(char* Exp)
 
 	for (int i = 0; str[i] != '\0'; i++)
 	{
-		
+
 		if (str[i] == '(')
 		{
 			switch(lastType)
 			{
-				case t_fpoint:   TOK_ERROR;  break;      
+				case t_fpoint:   TOK_ERROR;  break;
 				case t_digit:    TOK_ERROR;  break;
 				case t_opening:  NEW_TOKEN;  break;
 				case t_closing:  TOK_ERROR;  break;
@@ -165,14 +165,14 @@ char** tokenize(char* Exp)
 				case t_sign:     NEW_TOKEN;  break;
 				case t_nothing:  NEW_TOKEN;  break;
 				default:         TOK_ERROR;  break;
-			} 
+			}
 			lastType = t_opening;
 		}
 		else if (str[i] == ')')
 		{
 			switch(lastType)
 			{
-				case t_fpoint:   TOK_ERROR;  break;      
+				case t_fpoint:   TOK_ERROR;  break;
 				case t_digit:    NEW_TOKEN;  break;
 				case t_opening:  TOK_ERROR;  break;
 				case t_closing:  NEW_TOKEN;  break;
@@ -180,7 +180,7 @@ char** tokenize(char* Exp)
 				case t_sign:     TOK_ERROR;  break;
 				case t_nothing:  TOK_ERROR;  break;
 				default:         TOK_ERROR;  break;
-			} 
+			}
 			lastType = t_closing;
 		}
 		else if ((str[i] == '/') || (str[i] == '*'))
@@ -204,49 +204,49 @@ char** tokenize(char* Exp)
 			{
 				case t_fpoint:    TOK_ERROR; 						 break;
 				case t_digit:     NEW_TOKEN; lastType = t_operator;  break;
-				case t_opening:   NEW_TOKEN; 
+				case t_opening:   NEW_TOKEN;
 								  fpointFlag = false;
-								  lastType = t_sign;      
-								  break;   
+								  lastType = t_sign;
+								  break;
 				case t_closing:   NEW_TOKEN; lastType = t_operator;  break;
-				case t_operator:  NEW_TOKEN; 
+				case t_operator:  NEW_TOKEN;
 								  fpointFlag = false;
-								  lastType = t_sign;      
-								  break;	
+								  lastType = t_sign;
+								  break;
 				case t_sign:      TOK_ERROR; 					     break;
-				case t_nothing:   NEW_TOKEN; 
-								  fpointFlag = false;	
-								  lastType = t_sign;      
+				case t_nothing:   NEW_TOKEN;
+								  fpointFlag = false;
+								  lastType = t_sign;
 								  break;
 				default:          TOK_ERROR; 						 break;
-			}		
+			}
 		}
 		else if (isdigit(str[i]))
 		{
 			switch(lastType)
-			{ 
+			{
 				case t_fpoint:   EXT_TOKEN;  break;
 				case t_digit:    EXT_TOKEN;  break;
-				case t_opening:  NEW_TOKEN;  
-							     fpointFlag = false; 
+				case t_opening:  NEW_TOKEN;
+							     fpointFlag = false;
 								 break;
 				case t_closing:	 TOK_ERROR;  break;
-				case t_operator: NEW_TOKEN;  
+				case t_operator: NEW_TOKEN;
 								 fpointFlag = false;
-								 break; 
+								 break;
 				case t_sign:     EXT_TOKEN;  break;
 				case t_nothing:  NEW_TOKEN;
 								 fpointFlag = false;
 								 break;
 			}
 			lastType = t_digit;
-		} 
+		}
 		else if (str[i] == '.')
 		{
 			switch (lastType)
 			{
 				case t_fpoint:  TOK_ERROR;   break;
-				case t_digit:    
+				case t_digit:
 								if (fpointFlag)
 								{
 									TOK_ERROR;
@@ -259,14 +259,14 @@ char** tokenize(char* Exp)
 							 	break;
 				case t_opening:  TOK_ERROR;  break;
 				case t_closing:	 TOK_ERROR;  break;
-				case t_operator: TOK_ERROR;  break; 
+				case t_operator: TOK_ERROR;  break;
 				case t_sign:     TOK_ERROR;  break;
-				case t_nothing:  TOK_ERROR;  break;	
+				case t_nothing:  TOK_ERROR;  break;
 			}
-		} 
-	
+		}
+
 	}
-	m[++mati] = NULL; 
+	m[++mati] = NULL;
 	return m;
 }
 int calcPrecedence(char operator)
@@ -292,7 +292,7 @@ bool isOperator(char* c)
 	strtol(c, &endptr, 10);
 	if (c == NULL) { return false; }
 	if (endptr != c) { return false; }
-	
+
 
 	switch (c[0])
 	{
@@ -317,7 +317,7 @@ queue* resort(char** tokens)
 	              and ((the operator at the top of the operator stack has greater precedence)
 	                  or (the operator at the top of the operator stack has equal precedence and the token is left associative))
 	              and (the operator at the top of the operator stack is not a left parenthesis)):
-	            pop operators from the operator stack onto the output queue. 
+	            pop operators from the operator stack onto the output queue.
 	        push it onto the operator stack.
 	    else if the token is a left parenthesis (i.e. "("), then:
 	        push it onto the operator stack.
@@ -329,41 +329,42 @@ queue* resort(char** tokens)
 	            pop the operator from the operator stack and discard it
 	        if there is a function token at the top of the operator stack, then:
 	            pop the function from the operator stack onto the output queue.
-	// After while loop, if operator stack not null, pop everything to output queue // 
+	// After while loop, if operator stack not null, pop everything to output queue //
 	if there are no more tokens to read then:
 	    while there are still operator tokens on the stack:
 	        // If the operator token on the top of the stack is a parenthesis, then there are mismatched parentheses. //
 	        pop the operator from the operator stack onto the output queue.
-	exit. */ 
+	exit. */
 	stack* stk = createStack(256);
 	queue* q = createQueue(256);
 	int i = 0;
 	char* endptr;
 	while (tokens[i] != NULL)
 	{
-		if (stk->used == 0)
-		{
-			int i = 0;
-			while (tokens[i] != NULL)
-			{
-				if (isOperator(tokens[i]))
-				{
-					stackPush(stk, tokens[i]);
-					break;
-				}
-				i++;
-			}
-		}
-		
+		// if (stk->used == 0)
+		// {
+		// 	int i = 0;
+		// 	while (tokens[i] != NULL)
+		// 	{
+		// 		if (isOperator(tokens[i]))
+		// 		{
+		// 			stackPush(stk, tokens[i]);
+		// 			break;
+		// 		}
+		// 		i++;
+		// 	}
+		// }
+
 		strtold(tokens[i], &endptr);
 		if (endptr != tokens[i])
-		{ 
-			queuePush(q, tokens[i]);	
+		{
+			queuePush(q, tokens[i]);
 		}
 		else if (isOperator(tokens[i]))
 		{
-			while ((stk->stack[stk->used-1] != NULL)  && 
-				   (calcPrecedence(stk->stack[stk->used-1][0]) > 
+			while (stk->used > 0 &&
+				   (stk->stack[stk->used-1] != NULL)  &&
+				   (calcPrecedence(stk->stack[stk->used-1][0]) >
 				   calcPrecedence(tokens[i][0])) &&
 				   (stk->stack[stk->used-1][0] != '('))
 			{
@@ -374,9 +375,9 @@ queue* resort(char** tokens)
 		else if (!strcmp(tokens[i], "("))
 		{
 			stackPush(stk, tokens[i]);
-		}				
+		}
 		else if (!strcmp(tokens[i], ")"))
-		{	
+		{
 			while (strcmp(stk->stack[stk->used-1], "("))
 			{
 				queuePush(q, stackPop(stk));
@@ -395,7 +396,7 @@ queue* resort(char** tokens)
 	stackPop(stk);
 	for (int e = stk->used;e --> 0;)
 	{
-		queuePush(q, stackPop(stk)); 
+		queuePush(q, stackPop(stk));
 	}
 	freeStack(stk);
 	return q;
@@ -415,7 +416,7 @@ long double strToOp(long double n1, long double n2, char* op)
 long double calc(queue* q)
 {
 	char* endptr;
-	//i create two stacks: one for the numbers and 
+	//i create two stacks: one for the numbers and
 	//one for the operators
 	stack* nums = createStack(q->size);
 	queue* ops = createQueue(q->size);
@@ -434,18 +435,18 @@ long double calc(queue* q)
 	{
 		queuePush(ops, q->queue[i]);
 	}
-	
+
 	long double result = strtold(stackPop(nums), &endptr);
 	for (int i = q->size; i --> 0;)
 	{
 		if (i == q->size)
 		{
 			long double firstOperand = strtold(stackPop(nums), &endptr);
-			long double secondOperand = strtold(stackPop(nums), &endptr);	
+			long double secondOperand = strtold(stackPop(nums), &endptr);
 			char* operator = queuePop(ops);
 			result += strToOp(firstOperand, secondOperand, operator);
 		}
-		
+
 		if (ops->used == 0)
 		{
 			break;

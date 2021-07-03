@@ -28,7 +28,7 @@ char* queuePop(queue* q)
 		return NULL;
 	}
 	char* ret = q->queue[0];
-	for (int i = 0; i < q->used; i++)
+	for (int i = 1; i < q->used; i++)
 	{
 		q->queue[i-1] = q->queue[i];
 	}

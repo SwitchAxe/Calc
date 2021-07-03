@@ -341,19 +341,19 @@ queue* resort(char** tokens)
 	char* endptr;
 	while (tokens[i] != NULL)
 	{
-		if (stk->used == 0)
-		{
-			int i = 0;
-			while (tokens[i] != NULL)
-			{
-				if (isOperator(tokens[i]))
-				{
-					stackPush(stk, tokens[i]);
-					break;
-				}
-				i++;
-			}
-		}
+		// if (stk->used == 0)
+		// {
+		// 	int i = 0;
+		// 	while (tokens[i] != NULL)
+		// 	{
+		// 		if (isOperator(tokens[i]))
+		// 		{
+		// 			stackPush(stk, tokens[i]);
+		// 			break;
+		// 		}
+		// 		i++;
+		// 	}
+		// }
 
 		strtold(tokens[i], &endptr);
 		if (endptr != tokens[i])
@@ -386,10 +386,6 @@ queue* resort(char** tokens)
 			{
 				stackPop(stk);
 			}
-			if (stk->stack[stk->used-1] != NULL)
-			{
-				queuePush(q, stackPop(stk));
-			}
 		}
 		i++;
 	}
@@ -402,64 +398,50 @@ queue* resort(char** tokens)
 	return q;
 }
 
-long double strToOp(long double n1, long double n2, char* op)
-{
-	switch(op[0])
-	{
-		case '+': return n1+n2;
-		case '*': return n1*n2;
-		case '/': return n1/n2;
-		case '-': return n1-n2;
-	}
-}
+// long double strToOp(long double n1, long double n2, char* op)
+// {
+// 	switch(op[0])
+// 	{
+// 		case '+': return n1+n2;
+// 		case '*': return n1*n2;
+// 		case '/': return n1/n2;
+// 		case '-': return n1-n2;
+// 	}
+// }
 
 long double calc(queue* q)
 {
 	char* endptr;
-	//i create two stacks: one for the numbers and
-	//one for the operators
-	stack* nums = createStack(q->size);
-	queue* ops = createQueue(q->size);
-	//i fill the number stack
-	for (int i = 0; i < q->used; i++)
+	stack* numbers = createStack(q->size);
+	for (size_t i = 0; i < (q->used - 1); i++)
 	{
-		strtold(q->queue[i], &endptr);
-		if (endptr != q->queue[i])
+		strtold(q->queue[q->used - 1], &endptr);
+		if (endptr != q->queue[q->used - 1]) //the item on the top is a number
 		{
-			stackPush(nums, q->queue[i]);
+			stackPush(numbers, q->queue[q->used - 1]);
 		}
-
+		else
+		{
+			long double first_number = strtold(stackPop(numbers), &endptr);
+			long double second_number = strtold(stackPop(numbers), &endptr);
+			char* temp = (char*) malloc(MAX_LINE_LEN*sizeof(char));
+			switch (q->queue[q->used - 1][0])
+			{
+				case '+':
+					sprintf(temp, "%Lf", first_number + second_number);
+					break;
+				case '-':
+					sprintf(temp, "%Lf", first_number - second_number);
+					break;
+				case '*':
+					sprintf(temp, "%Lf", first_number * second_number);
+					break;
+				case '/':
+					sprintf(temp, "%Lf", first_number / second_number);
+					break;
+			}
+		}
 	}
-	//i fill the operator queue
-	for (int i = nums->used; i < q->used; i++)
-	{
-		queuePush(ops, q->queue[i]);
-	}
-
-	long double result = strtold(stackPop(nums), &endptr);
-	for (int i = q->size; i --> 0;)
-	{
-		if (i == q->size)
-		{
-			long double firstOperand = strtold(stackPop(nums), &endptr);
-			long double secondOperand = strtold(stackPop(nums), &endptr);
-			char* operator = queuePop(ops);
-			result += strToOp(firstOperand, secondOperand, operator);
-		}
-
-		if (ops->used == 0)
-		{
-			break;
-		}
-		if (nums->used == 0)
-		{
-			break;
-		}
-		long double firstOperand = result;
-		long double secondOperand = strtold(stackPop(nums), &endptr);
-		char* operator = queuePop(ops);
-		result = strToOp(firstOperand, secondOperand, operator);
-	}
-	return result;
+	return strtold(stackPop(numbers), &endptr);
 }
 

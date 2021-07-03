@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
       char* str = malloc(MAX_LINE_LEN*sizeof(char));
       while (printf("> ") && fgets(str, MAX_LINE_LEN, stdin) && strcmp(str, "exit\n"))
       {
-         removeNewline(str); 
-		 char** exp = tokenize(str); 
+         char* rmstr = removeNewline(str); 
+		 char** exp = tokenize(rmstr); 
 		 printf("got here!2\n");
          queue* q = resort(exp);
          long double result = calc(q); 

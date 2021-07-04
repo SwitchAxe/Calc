@@ -306,7 +306,7 @@ bool isOperator(char* c)
 	}
 }
 
-queue* resort(char** tokens)
+queue* no_resort(char** tokens)
 {
 /*	while there are tokens to be read:
 	    read a token.
@@ -398,49 +398,153 @@ queue* resort(char** tokens)
 	return q;
 }
 
-// long double strToOp(long double n1, long double n2, char* op)
-// {
-// 	switch(op[0])
-// 	{
-// 		case '+': return n1+n2;
-// 		case '*': return n1*n2;
-// 		case '/': return n1/n2;
-// 		case '-': return n1-n2;
-// 	}
-// }
+// resort <<<
+queue* resort(char** tokens)
+{
+	/*
+	while there are tokens to be read:
+	read a token.
+	if the token is a number, then:
+	push it to the output queue.
+	else if the token is an operator then:
+	while ((there is an operator at the top of the operator stack)
+	and ((the operator at the top of the operator stack has greater precedence)
+	or (the operator at the top of the operator stack has equal precedence and the token is left associative))
+	and (the operator at the top of the operator stack is not a left parenthesis)):
+	pop operators from the operator stack onto the output queue.
+	push it onto the operator stack.
+	else if the token is a left parenthesis (i.e. "("), then:
+	push it onto the operator stack.
+	else if the token is a right parenthesis (i.e. ")"), then:
+	while the operator at the top of the operator stack is not a left parenthesis:
+	pop the operator from the operator stack onto the output queue.
+	// If the stack runs out without finding a left parenthesis, then there are mismatched parentheses. //
+	if there is a left parenthesis at the top of the operator stack, then:
+	pop the operator from the operator stack and discard it
+	if there is a function token at the top of the operator stack, then:
+	pop the function from the operator stack onto the output queue.
+
+	// After while loop, if operator stack not null, pop everything to output queue //
+	while there are still operator tokens on the stack:
+	// If the operator token on the top of the stack is a parenthesis, then there are mismatched parentheses. //
+	pop the operator from the operator stack onto the output queue.
+	*/
+
+	stack* stk = createStack(256);
+	queue* q = createQueue(256);
+
+	int i = 0;
+	char* endptr;
+
+	while (tokens[i] != NULL) // while there are tokens to be read <<<
+	{
+		/* if (stk->used == 0) */
+		/* { */
+		/*    int i = 0; */
+		/*    while (tokens[i] != NULL) */
+		/*    { */
+		/*       if (isOperator(tokens[i])) */
+		/*       { */
+		/*          stackPush(stk, tokens[i]); */
+		/*          break; */
+		/*       } */
+		/*       i++; */
+		/*    } */
+		/* } */
+
+		strtold(tokens[i], &endptr); // read a token
+		if (endptr != tokens[i]) // if the token is a number <<<
+		{
+			queuePush(q, tokens[i]);
+		} // >>>
+		else if (isOperator(tokens[i])) // if the token is an operator <<<
+		{
+			while (stk->used > 0 &&
+				  (stk->stack[stk->used-1] != NULL)  &&
+				  (calcPrecedence(stk->stack[stk->used-1][0]) >
+				  calcPrecedence(tokens[i][0])) &&
+				  (stk->stack[stk->used-1][0] != '('))
+			{
+				queuePush(q, stackPop(stk)); // pop operators from the operator stack onto the output queue
+			}
+			stackPush(stk, tokens[i]); // push it onto the operator stack
+		} // >>>
+		else if (!strcmp(tokens[i], "(")) // if the token is a left parenthesis <<<
+		{
+			stackPush(stk, tokens[i]); // push it onto the operator stack
+		} /// >>>
+		else if (!strcmp(tokens[i], ")")) // if the token is a right parenthesis
+		{
+			while (strcmp(stk->stack[stk->used-1], "(")) // while the operator at the top of the operator stack is not a left parenthesis
+			{
+				queuePush(q, stackPop(stk)); // pop the operator from the operator stack onto the output queue
+			}
+			if (!strcmp(stk->stack[stk->used-1], "(")) // if there is a left parenthesis at the top of the operator stack
+			{
+				stackPop(stk); // pop the operator from the operator stack and discard it
+			}
+			/* if (stk->stack[stk->used-1] != NULL) */
+			/* { */
+			/*    queuePush(q, stackPop(stk)); */
+			/* } */
+		}
+		i++;
+	} // >>>
+
+	/* stackPop(stk); */
+
+	for(int e = stk->used;e --> 0;)
+	{
+		queuePush(q, stackPop(stk));
+	}
+	freeStack(stk);
+
+	return q;
+} // >>>
 
 long double calc(queue* q)
 {
 	char* endptr;
 	stack* numbers = createStack(q->size);
-	for (size_t i = 0; i < (q->used - 1); i++)
+	for (size_t i = 0, len = q->used; i < len; i++)
 	{
-		strtold(q->queue[q->used - 1], &endptr);
-		if (endptr != q->queue[q->used - 1]) //the item on the top is a number
+		char* current_token = q->queue[0];
+		strtold(current_token, &endptr);
+		if (endptr != current_token) //the item on the top is a number
 		{
-			stackPush(numbers, q->queue[q->used - 1]);
+			stackPush(numbers, current_token);
 		}
 		else
 		{
 			long double first_number = strtold(stackPop(numbers), &endptr);
 			long double second_number = strtold(stackPop(numbers), &endptr);
 			char* temp = (char*) malloc(MAX_LINE_LEN*sizeof(char));
-			switch (q->queue[q->used - 1][0])
+			switch (current_token[0])
 			{
 				case '+':
+				{
 					sprintf(temp, "%Lf", first_number + second_number);
 					break;
+				}
 				case '-':
+				{
 					sprintf(temp, "%Lf", first_number - second_number);
 					break;
+				}
 				case '*':
+				{
 					sprintf(temp, "%Lf", first_number * second_number);
 					break;
+				}
 				case '/':
+				{
 					sprintf(temp, "%Lf", first_number / second_number);
 					break;
+				}
 			}
+			stackPush(numbers, temp);
 		}
+		queuePop(q);
 	}
 	return strtold(stackPop(numbers), &endptr);
 }

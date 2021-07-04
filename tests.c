@@ -156,7 +156,9 @@ int main(void)
 		char* tokens[] = {"25", "+", "34", NULL};
 		test_resort(tokens, q, __LINE__, "normal situation");
 	}
-
+    {
+        queue* q = createQueue()
+    }
 #endif
 
 	return 0;

@@ -438,26 +438,12 @@ queue* resort(char** tokens)
 
 	while (tokens[i] != NULL) // while there are tokens to be read <<<
 	{
-		/* if (stk->used == 0) */
-		/* { */
-		/*    int i = 0; */
-		/*    while (tokens[i] != NULL) */
-		/*    { */
-		/*       if (isOperator(tokens[i])) */
-		/*       { */
-		/*          stackPush(stk, tokens[i]); */
-		/*          break; */
-		/*       } */
-		/*       i++; */
-		/*    } */
-		/* } */
-
-		strtold(tokens[i], &endptr); // read a token
-		if (endptr != tokens[i]) // if the token is a number <<<
+		strtold(tokens[i], &endptr);
+		if (endptr != tokens[i])
 		{
 			queuePush(q, tokens[i]);
 		} // >>>
-		else if (isOperator(tokens[i])) // if the token is an operator <<<
+		else if (isOperator(tokens[i]))
 		{
 			while (stk->used > 0 &&
 				  (stk->stack[stk->used-1] != NULL)  &&
@@ -465,28 +451,24 @@ queue* resort(char** tokens)
 				  calcPrecedence(tokens[i][0])) &&
 				  (stk->stack[stk->used-1][0] != '('))
 			{
-				queuePush(q, stackPop(stk)); // pop operators from the operator stack onto the output queue
+				queuePush(q, stackPop(stk));
 			}
-			stackPush(stk, tokens[i]); // push it onto the operator stack
+			stackPush(stk, tokens[i]);
 		} // >>>
-		else if (!strcmp(tokens[i], "(")) // if the token is a left parenthesis <<<
+		else if (!strcmp(tokens[i], "("))
 		{
-			stackPush(stk, tokens[i]); // push it onto the operator stack
+			stackPush(stk, tokens[i]);
 		} /// >>>
-		else if (!strcmp(tokens[i], ")")) // if the token is a right parenthesis
+		else if (!strcmp(tokens[i], ")"))
 		{
-			while (strcmp(stk->stack[stk->used-1], "(")) // while the operator at the top of the operator stack is not a left parenthesis
+			while (strcmp(stk->stack[stk->used-1], "("))
 			{
-				queuePush(q, stackPop(stk)); // pop the operator from the operator stack onto the output queue
+				queuePush(q, stackPop(stk));
 			}
-			if (!strcmp(stk->stack[stk->used-1], "(")) // if there is a left parenthesis at the top of the operator stack
+			if (!strcmp(stk->stack[stk->used-1], "("))
 			{
-				stackPop(stk); // pop the operator from the operator stack and discard it
+				stackPop(stk);
 			}
-			/* if (stk->stack[stk->used-1] != NULL) */
-			/* { */
-			/*    queuePush(q, stackPop(stk)); */
-			/* } */
 		}
 		i++;
 	} // >>>

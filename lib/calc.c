@@ -349,7 +349,7 @@ queue* resort(char** tokens)
 		if (endptr != tokens[i])
 		{
 			queuePush(q, tokens[i]);
-		} // >>>
+		} 
 		else if (isOperator(tokens[i]))
 		{
 			while (stk->used > 0 &&
@@ -361,11 +361,11 @@ queue* resort(char** tokens)
 				queuePush(q, stackPop(stk));
 			}
 			stackPush(stk, tokens[i]);
-		} // >>>
+		} 
 		else if (!strcmp(tokens[i], "("))
 		{
 			stackPush(stk, tokens[i]);
-		} /// >>>
+		} 
 		else if (!strcmp(tokens[i], ")"))
 		{
 			while (strcmp(stk->stack[stk->used-1], "("))
@@ -410,22 +410,22 @@ long double calc(queue* q)
 			{
 				case '+':
 				{
-					sprintf(temp, "%Lf", first_number + second_number);
+					sprintf(temp, "%Lf", second_number + first_number);
 					break;
 				}
 				case '-':
 				{
-					sprintf(temp, "%Lf", first_number - second_number);
+					sprintf(temp, "%Lf", second_number - first_number);
 					break;
 				}
 				case '*':
 				{
-					sprintf(temp, "%Lf", first_number * second_number);
+					sprintf(temp, "%Lf", second_number * first_number);
 					break;
 				}
 				case '/':
 				{
-					sprintf(temp, "%Lf", first_number / second_number);
+					sprintf(temp, "%Lf", second_number / first_number);
 					break;
 				}
 			}
